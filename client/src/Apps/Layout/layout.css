@@ -1,0 +1,9 @@
+.main{
+    display: flex;
+    padding: 15px;
+    gap: 16px;
+    background-color: #EEEEF0;
+}
+.content{
+    flex: 1;
+}
