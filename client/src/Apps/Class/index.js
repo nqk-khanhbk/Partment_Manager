@@ -3,9 +3,9 @@ import { Box } from '@mui/material';
 import './Class.css';
 import ClassTable from '../../components/Table';
 // import CustomTable from '../../components/customtable';
-import { dataTitle, data,dataTitle1,dataTitle2,data2} from '../../data/feckdata';
+import { dataTitle, data} from '../../data/feckdata';
 import HeaderClassManager from '../../components/headerClass';
-const columns1 = dataTitle1;
+// const columns1 = dataTitle1;
 const columns = dataTitle; 
 const rows = data;
 const ClassRoom = () => {

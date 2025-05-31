@@ -14,8 +14,10 @@ import LockResetIcon from '@mui/icons-material/LockReset';
 import PersonIcon from '@mui/icons-material/Person';
 import {BsChevronDown} from 'react-icons/bs'
 import { Link } from 'react-router-dom';
-
+import { deleteCookie } from '../../helper/cookies.helper';
+import { useNavigate } from "react-router-dom";
 const AccountMenu = () => {
+     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -24,7 +26,11 @@ const AccountMenu = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
+    const handleLogout = () => {
+        deleteCookie("accessToken");
+        deleteCookie("name"); 
+        navigate("/login");  
+    };
     return (
         <>
             <Stack direction="row" alignItems="center" spacing={0.5}>
@@ -82,7 +88,7 @@ const AccountMenu = () => {
                     Cài đặt
                 </MenuItem>
                 <Divider />
-                <MenuItem component={Link} to="/logout">
+                <MenuItem onClick={handleLogout}>
                     <ListItemIcon><Logout fontSize="small" /></ListItemIcon>
                     Đăng xuất
                 </MenuItem>
