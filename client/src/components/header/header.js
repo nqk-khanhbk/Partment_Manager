@@ -9,8 +9,9 @@ import {
 } from '@mui/material';
 import { BsBell, BsChatDots} from 'react-icons/bs';
 import AccountMenu from './accountMenu';
-
+import { getCookie } from '../../helper/cookies.helper';
 const Header = () => {
+  const name = getCookie("name");
   return (
     <AppBar position="static" sx={{ backgroundColor: '#C02135' }}>
       <Toolbar sx={{ justifyContent: 'space-between' }}>
@@ -31,7 +32,7 @@ const Header = () => {
         <Stack direction="row" alignItems="center" spacing={0.5}>
           <IconButton sx={{ color: 'white' }}><BsBell /></IconButton>
           <IconButton sx={{ color: 'white' }}><BsChatDots /></IconButton>
-          <Typography variant="body1">Người dùng 1</Typography>
+          <Typography variant="body1">{name}</Typography>
           <AccountMenu />
         </Stack>
       </Toolbar>

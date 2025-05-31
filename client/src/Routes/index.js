@@ -10,56 +10,61 @@ import Resident from "../Apps/resident";
 import Invoices from "../Apps/invoices";
 import Statistics from "../Apps/statistics";
 import FeeAndFund from "../Apps/feeAndFund";
+import PrivateRoutes from "../components/privateRoutes";
 export const Routes = [
     {
-        path:"/login",
-        element:<Login/>
+        path: "/login",
+        element: <Login />
     },
     {
-        path:"/register",
-        element:<Register/>
+        path: "/register",
+        element: <Register />
     },
     {
-        path:'/',
-        element:<Layout/>,
-        children:[
+        path: '/',
+        element: <Layout />,
+        children: [
             {
-                path:'/tong-quan',
-                element:<Dashboard/>
-            },
-            {
-                path:'/xe-co',
-                element:<Vehicle/>
-            },
-            {
-                path:'/cu-dan',
-                element:<Resident/>
-            },
-            {
-                path:'/hoa-don',
-                element:<Invoices/>
-            },
-            {
-                path:'/thong-ke',
-                element:<Statistics/>
-            },
-            {
-                path:'/phi-va-quy',
-                element:<FeeAndFund/>
-            },
-            {
-                path:'/lop-hoc',
-                element:<ClassRoom/>,
-            },
-            {
-                path:'/lop-hoc/them-lop-thu-cong',
-                element:<ClassHand />
-            },
-            {
-                path:'/lop-hoc/them-lop-tu-ehust',
-                element:<ClassCreateEhust/>
+                element: <PrivateRoutes />,
+                children: [
+                    {
+                        path: '/tong-quan',
+                        element: <Dashboard />
+                    },
+                    {
+                        path: '/xe-co',
+                        element: <Vehicle />
+                    },
+                    {
+                        path: '/cu-dan',
+                        element: <Resident />
+                    },
+                    {
+                        path: '/hoa-don',
+                        element: <Invoices />
+                    },
+                    {
+                        path: '/thong-ke',
+                        element: <Statistics />
+                    },
+                    {
+                        path: '/phi-va-quy',
+                        element: <FeeAndFund />
+                    },
+                    {
+                        path: '/lop-hoc',
+                        element: <ClassRoom />,
+                    },
+                    {
+                        path: '/lop-hoc/them-lop-thu-cong',
+                        element: <ClassHand />
+                    },
+                    {
+                        path: '/lop-hoc/them-lop-tu-ehust',
+                        element: <ClassCreateEhust />
+                    }
+                ]
             }
-
         ]
     }
 ]
