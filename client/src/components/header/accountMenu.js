@@ -16,6 +16,7 @@ import {BsChevronDown} from 'react-icons/bs'
 import { Link } from 'react-router-dom';
 import { deleteCookie } from '../../helper/cookies.helper';
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const AccountMenu = () => {
      const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -29,7 +30,8 @@ const AccountMenu = () => {
     const handleLogout = () => {
         deleteCookie("accessToken");
         deleteCookie("name"); 
-        navigate("/login");  
+        navigate("/login"); 
+        toast.success("Đăng xuất thành công!"); 
     };
     return (
         <>

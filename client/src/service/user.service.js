@@ -1,4 +1,4 @@
-import { get, post } from "../utils/request"
+import {  post } from "../utils/request"
 
 //đăng nhập
 export const login = async (option) =>{
@@ -6,11 +6,7 @@ export const login = async (option) =>{
     return result;
 }
 export const register = async (option)=>{
-    const result = await post(`register`,option);
-    return result;
-}
-export const ckeckRegister = async (key,value)=>{
-    const result = await get(`register?${key}=${value}`);
+    const result = await post(`users/register`,option);
     return result;
 }
 // tạo hàm logout
