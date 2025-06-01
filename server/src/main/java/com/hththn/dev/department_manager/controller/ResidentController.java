@@ -20,7 +20,7 @@ import com.turkraft.springfilter.boot.Filter;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/residents")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ResidentController {
     private final ResidentService residentService;
 

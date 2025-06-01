@@ -23,7 +23,7 @@
 //
 //@RestController
 //@RequestMapping("/users")
-//@CrossOrigin(origins = "http://localhost:5173")
+//@CrossOrigin(origins = "http://localhost:3000")
 //@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 //@RequiredArgsConstructor
 //public class OAuth2Controller {

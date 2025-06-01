@@ -19,7 +19,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/invoiceapartment")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:3000")
 public class InvoiceApartmentController {
     InvoiceService invoiceService;
     private final InvoiceApartmentRepository invoiceApartmentRepository;
