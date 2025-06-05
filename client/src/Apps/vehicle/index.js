@@ -1,24 +1,35 @@
 import {
-  Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions,
-  FormControl, FormControlLabel, FormLabel, RadioGroup, Radio, TextField
+  Box,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  RadioGroup,
+  Radio,
+  TextField,
 } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { listVehicle, createVehicle } from "../../service/vehicle.service";
 import { useState, useEffect } from "react";
 import ClassTable from "../../components/Table";
-import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/material/IconButton';
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 import { toast } from "react-toastify";
 const Vehicle = () => {
   const [dataVehicle, setDataVehicle] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
 
   const [newVehicle, setNewVehicle] = useState({
-    id: "",                // Thêm trường biển số xe
+    id: "", // Thêm trường biển số xe
     category: "Motorbike",
-    apartmentId: ""
+    apartmentId: "",
   });
 
   // Lấy danh sách xe
@@ -32,43 +43,42 @@ const Vehicle = () => {
     fetchData();
   }, []);
 
-
   const columns = [
     { field: "id", headerName: "Biển số xe", disableSearch: "search" },
     { field: "apartmentId", headerName: "Số phòng", disableSearch: "search" },
-    { 
-      field: "category", 
+    {
+      field: "category",
       headerName: "Loại xe",
-      renderCell:(row)=>{
+      renderCell: (row) => {
         const category = row.category;
-        let color='#000';
-        switch(category){
-          case 'Car':
-            color='#4caf50';
+        let color = "#000";
+        switch (category) {
+          case "Car":
+            color = "#4caf50";
             break;
-          case 'Motorbike':
-            color='#F44336';
+          case "Motorbike":
+            color = "#F44336";
             break;
           default:
-            color="#757575"
+            color = "#757575";
         }
         return (
           <Box
-              sx={{
-                  padding: '2px 8px',
-                  backgroundColor: `${color}22`, // nền nhạt
-                  color: color,
-                  borderRadius: '8px',
-                  display: 'inline-block',
-                  fontWeight: 500,
-                  fontSize: '14px',
-                  textAlign: 'center'
-              }}
+            sx={{
+              padding: "2px 8px",
+              backgroundColor: `${color}22`, // nền nhạt
+              color: color,
+              borderRadius: "8px",
+              display: "inline-block",
+              fontWeight: 500,
+              fontSize: "14px",
+              textAlign: "center",
+            }}
           >
-              {category}
+            {category}
           </Box>
         );
-      }
+      },
     },
     { field: "registerDate", headerName: "Ngày đăng ký" },
     {
@@ -76,12 +86,18 @@ const Vehicle = () => {
       headerName: "Hành động",
       flex: 1,
       renderCell: () => (
-        <Box display="flex" justifyContent="flex-start" gap="15px" sx={{ cursor: 'pointer' }} alignItems="center">
-          <EditIcon sx={{ color: '#0D81ED' }} />
+        <Box
+          display="flex"
+          justifyContent="flex-start"
+          gap="15px"
+          sx={{ cursor: "pointer" }}
+          alignItems="center"
+        >
+          <EditIcon sx={{ color: "#0D81ED" }} />
           <DeleteIcon sx={{ color: "#C02135" }} />
         </Box>
-      )
-    }
+      ),
+    },
   ];
 
   const handleCreate = async () => {
@@ -91,7 +107,7 @@ const Vehicle = () => {
       toast.warning("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
-    console.log(newVehicle)
+    console.log(newVehicle);
     try {
       const res = await createVehicle(newVehicle);
       if (res) {
@@ -100,7 +116,7 @@ const Vehicle = () => {
         setNewVehicle({
           id: "",
           category: "Motorbike",
-          apartmentId: ""
+          apartmentId: "",
         });
         const refresh = await listVehicle(); // reload lại dữ liệu sau khi tạo
         setDataVehicle(refresh.data.result);
@@ -118,20 +134,32 @@ const Vehicle = () => {
         display="flex"
         alignItems="center"
         justifyContent="space-between"
-        sx={{ padding: '12px', borderRadius: '8px', gap: '12px', backgroundColor: '#FFFF' }}
+        sx={{
+          padding: "12px",
+          borderRadius: "8px",
+          gap: "12px",
+          backgroundColor: "#FFFF",
+        }}
       >
-        <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#C01235' }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold", color: "#C01235" }}>
           Quản lý xe cộ
         </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', borderRadius: '10px' }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+            borderRadius: "10px",
+          }}
+        >
           <Button
             variant="contained"
             sx={{
-              backgroundColor: '#0B57D0',
-              textTransform: 'none',
-              borderRadius: '999px',
+              backgroundColor: "#0B57D0",
+              textTransform: "none",
+              borderRadius: "999px",
               paddingX: 2,
-              fontWeight: 500
+              fontWeight: 500,
             }}
             onClick={() => setOpenDialog(true)}
           >
@@ -142,7 +170,13 @@ const Vehicle = () => {
       </Box>
 
       {/* Bảng danh sách xe */}
-      <Box padding="12px" gap="12px" borderRadius="8px" backgroundColor="#fff" marginTop="20px">
+      <Box
+        padding="12px"
+        gap="12px"
+        borderRadius="8px"
+        backgroundColor="#fff"
+        marginTop="20px"
+      >
         <ClassTable columns={columns} rows={dataVehicle} allowSearching />
       </Box>
 
@@ -153,8 +187,8 @@ const Vehicle = () => {
         PaperProps={{
           sx: {
             borderRadius: 3,
-            position: 'relative',
-          }
+            position: "relative",
+          },
         }}
       >
         <DialogTitle>
@@ -162,7 +196,7 @@ const Vehicle = () => {
           <IconButton
             onClick={() => setOpenDialog(false)}
             sx={{
-              position: 'absolute',
+              position: "absolute",
               right: 8,
               top: 8,
               color: (theme) => theme.palette.grey[500],
@@ -172,36 +206,62 @@ const Vehicle = () => {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 400, mt: 1 }}>
+        <DialogContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            width: 400,
+            mt: 1,
+          }}
+        >
           <TextField
             label="Biển số xe"
             fullWidth
             value={newVehicle.id}
-            onChange={(e) => setNewVehicle({ ...newVehicle, id: e.target.value })}
+            onChange={(e) =>
+              setNewVehicle({ ...newVehicle, id: e.target.value })
+            }
           />
           <FormControl fullWidth margin="dense">
-            <FormLabel sx={{ fontSize: "16px", fontWeight: 600 }}>Kiểu Xe</FormLabel>
+            <FormLabel sx={{ fontSize: "16px", fontWeight: 600 }}>
+              Kiểu Xe
+            </FormLabel>
             <RadioGroup
               row
               value={newVehicle.category}
-              onChange={(e) => setNewVehicle({ ...newVehicle, category: e.target.value })}
-              sx={{ display: 'flex', justifyContent: 'space-between' }}
+              onChange={(e) =>
+                setNewVehicle({ ...newVehicle, category: e.target.value })
+              }
+              sx={{ display: "flex", justifyContent: "space-between" }}
             >
-              <FormControlLabel value="Motorbike" control={<Radio />} label="Xe máy" />
-              <FormControlLabel value="Car" control={<Radio />} label="Xe ô tô" />
+              <FormControlLabel
+                value="Motorbike"
+                control={<Radio />}
+                label="Xe máy"
+              />
+              <FormControlLabel
+                value="Car"
+                control={<Radio />}
+                label="Xe ô tô"
+              />
             </RadioGroup>
           </FormControl>
           <TextField
             label="Số phòng"
             fullWidth
             value={newVehicle.apartmentId}
-            onChange={(e) => setNewVehicle({ ...newVehicle, apartmentId: e.target.value })}
+            onChange={(e) =>
+              setNewVehicle({ ...newVehicle, apartmentId: e.target.value })
+            }
           />
         </DialogContent>
 
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Hủy</Button>
-          <Button onClick={handleCreate} variant="contained" color="primary">Xác nhận</Button>
+          <Button onClick={handleCreate} variant="contained" color="primary">
+            Xác nhận
+          </Button>
         </DialogActions>
       </Dialog>
     </>
