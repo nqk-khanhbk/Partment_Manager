@@ -31,6 +31,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
 import { useState, useEffect } from "react";
 import ClassTable from "../../components/Table";
 import IconButton from "@mui/material/IconButton";
@@ -43,6 +45,7 @@ import {
   deleteInvoice,
   listFee,
   getApartments,
+  uploadUtilityBill, // API để upload utility bill
 } from "../../service/invoices.service";
 
 const Invoices = () => {
@@ -51,18 +54,25 @@ const Invoices = () => {
   const [openDetailDialog, setOpenDetailDialog] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [allApartments, setAllApartments] = useState([]); // Danh sách căn hộ
+  const [allApartments, setAllApartments] = useState([]);
+
+  // State cho UtilityBill
+  const [openUtilityDialog, setOpenUtilityDialog] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileName, setFileName] = useState("");
+  const [billName, setBillName] = useState("");
+  const [utilityData, setUtilityData] = useState([]);
 
   const [newInvoice, setNewInvoice] = useState({
     invoiceId: "",
     name: "",
     description: "",
     feeIds: [],
-    apartmentId: "", // null sẽ là "Tất cả"
+    apartmentId: "",
   });
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [allFees, setAllFees] = useState([]); // Danh sách tất cả các fee
+  const [allFees, setAllFees] = useState([]);
 
   const [editInvoice, setEditInvoice] = useState({
     invoiceId: "",
@@ -139,6 +149,75 @@ const Invoices = () => {
     fetchAllFees();
     fetchApartments();
   }, []);
+
+  // Utility Bill Functions
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setFileName(file.name);
+      setSelectedFile(file);
+
+      // Tạo mock data để preview (thay thế bằng API call thực tế)
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("name", "preview_" + Date.now());
+
+        const response = await uploadUtilityBill(formData);
+        if (response && response.data) {
+          setUtilityData(response.data);
+          toast.success("Đã tải và xem trước dữ liệu thành công!");
+        }
+      } catch (error) {
+        console.error("Error previewing file:", error);
+        toast.error("Không thể đọc file! Vui lòng kiểm tra định dạng file.");
+
+        // Reset nếu có lỗi
+        setSelectedFile(null);
+        setFileName("");
+        setUtilityData([]);
+      }
+    }
+  };
+
+  // Handle file selection
+  const handleUtilitySubmit = async () => {
+    if (!selectedFile || !billName) {
+      toast.error("Vui lòng chọn file và nhập tên hóa đơn!");
+      return;
+    }
+
+    // Kiểm tra nếu đã có data preview thì không cần upload lại
+    if (utilityData.length === 0) {
+      toast.error("Vui lòng chọn file hợp lệ có dữ liệu!");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("name", billName); // Tên thật khi submit
+
+      const response = await uploadUtilityBill(formData);
+      if (response) {
+        toast.success("Thêm hóa đơn tiện ích thành công!");
+        setOpenUtilityDialog(false);
+        resetUtilityForm();
+        fetchInvoices(); // Refresh data
+      }
+    } catch (error) {
+      console.error("Lỗi khi upload utility bill:", error);
+      toast.error("Thêm hóa đơn tiện ích thất bại!");
+    }
+  };
+
+  // Thêm hàm resetUtilityForm
+  const resetUtilityForm = () => {
+    setSelectedFile(null);
+    setFileName("");
+    setBillName("");
+    setUtilityData([]);
+  };
 
   // Handle functions
   const handleCreate = async () => {
@@ -447,29 +526,55 @@ const Invoices = () => {
           <ReceiptIcon /> Quản lý Hóa đơn
         </Typography>
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setOpenDialog(true)}
-          sx={{
-            backgroundColor: "#0B57D0",
-            textTransform: "none",
-            borderRadius: "24px",
-            paddingX: 3,
-            paddingY: 1.5,
-            fontWeight: 600,
-            fontSize: "14px",
-            boxShadow: "0 4px 12px rgba(11, 87, 208, 0.3)",
-            "&:hover": {
-              backgroundColor: "#0948B3",
-              boxShadow: "0 6px 16px rgba(11, 87, 208, 0.4)",
-              transform: "translateY(-1px)",
-            },
-            transition: "all 0.2s ease-in-out",
-          }}
-        >
-          Thêm hóa đơn mới
-        </Button>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setOpenDialog(true)}
+            sx={{
+              backgroundColor: "#0B57D0",
+              textTransform: "none",
+              borderRadius: "24px",
+              paddingX: 3,
+              paddingY: 1.5,
+              fontWeight: 600,
+              fontSize: "14px",
+              boxShadow: "0 4px 12px rgba(11, 87, 208, 0.3)",
+              "&:hover": {
+                backgroundColor: "#0948B3",
+                boxShadow: "0 6px 16px rgba(11, 87, 208, 0.4)",
+                transform: "translateY(-1px)",
+              },
+              transition: "all 0.2s ease-in-out",
+            }}
+          >
+            Thêm hóa đơn mới
+          </Button>
+
+          <Button
+            variant="contained"
+            startIcon={<ElectricBoltIcon />}
+            onClick={() => setOpenUtilityDialog(true)}
+            sx={{
+              backgroundColor: "#708871",
+              textTransform: "none",
+              borderRadius: "24px",
+              paddingX: 3,
+              paddingY: 1.5,
+              fontWeight: 600,
+              fontSize: "14px",
+              boxShadow: "0 4px 12px rgba(112, 136, 113, 0.3)",
+              "&:hover": {
+                backgroundColor: "#5A6E5D",
+                boxShadow: "0 6px 16px rgba(112, 136, 113, 0.4)",
+                transform: "translateY(-1px)",
+              },
+              transition: "all 0.2s ease-in-out",
+            }}
+          >
+            Thêm hóa đơn tiện ích
+          </Button>
+        </Box>
       </Box>
 
       {/* Table */}
@@ -1211,6 +1316,239 @@ const Invoices = () => {
             disabled={!editInvoice.name || editInvoice.feeIds.length === 0}
           >
             Cập nhật hóa đơn
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Utility Bill Dialog */}
+      <Dialog
+        open={openUtilityDialog}
+        onClose={() => {
+          setOpenUtilityDialog(false);
+          resetUtilityForm();
+        }}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            position: "relative",
+          },
+        }}
+      >
+        <DialogTitle>
+          <Box display="flex" alignItems="center" gap={1}>
+            <ElectricBoltIcon sx={{ color: "#708871" }} />
+            Thêm hóa đơn tiện ích
+          </Box>
+          <IconButton
+            onClick={() => {
+              setOpenUtilityDialog(false);
+              resetUtilityForm();
+            }}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent sx={{ p: 3 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+            {/* Upload File Section */}
+            <Box>
+              <Typography
+                variant="h6"
+                gutterBottom
+                color="primary"
+                sx={{ mb: 2 }}
+              >
+                <UploadFileIcon sx={{ mr: 1, verticalAlign: "middle" }} />
+                Tải lên file Excel
+              </Typography>
+
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <input
+                  type="file"
+                  accept=".xlsx,.xls"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                  id="utility-file-input"
+                />
+                <label htmlFor="utility-file-input">
+                  <Button
+                    variant="outlined"
+                    component="span"
+                    startIcon={<UploadFileIcon />}
+                    sx={{
+                      padding: "12px 24px",
+                      borderStyle: "dashed",
+                      borderWidth: 2,
+                      borderRadius: 2,
+                      textTransform: "none",
+                      fontWeight: 500,
+                      color: "#708871",
+                      borderColor: "#708871",
+                      "&:hover": {
+                        backgroundColor: "#708871",
+                        color: "white",
+                        borderColor: "#708871",
+                      },
+                    }}
+                  >
+                    Chọn file Excel
+                  </Button>
+                </label>
+
+                {fileName && (
+                  <Box
+                    sx={{
+                      p: 2,
+                      backgroundColor: "#f8f9fa",
+                      borderRadius: 2,
+                      border: "1px solid #dee2e6",
+                    }}
+                  >
+                    <Typography variant="body2" color="text.secondary">
+                      File đã chọn:
+                    </Typography>
+                    <Typography variant="body1" fontWeight="500">
+                      {fileName}
+                    </Typography>
+                  </Box>
+                )}
+
+                <TextField
+                  label="Tên hóa đơn tiện ích"
+                  fullWidth
+                  value={billName}
+                  onChange={(e) => setBillName(e.target.value)}
+                  placeholder="Nhập tên hóa đơn tiện ích"
+                  required
+                />
+              </Box>
+            </Box>
+
+            {/* Preview Data */}
+            {utilityData.length > 0 && (
+              <Box>
+                <Typography variant="h6" gutterBottom color="primary">
+                  Xem trước dữ liệu ({utilityData.length} căn hộ)
+                </Typography>
+
+                <TableContainer
+                  component={Paper}
+                  variant="outlined"
+                  sx={{ maxHeight: 300 }}
+                >
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow sx={{ backgroundColor: "#F5F5F5" }}>
+                        <TableCell>
+                          <strong>Căn hộ</strong>
+                        </TableCell>
+                        <TableCell align="center">
+                          <strong>Điện (kWh)</strong>
+                        </TableCell>
+                        <TableCell align="center">
+                          <strong>Nước (m³)</strong>
+                        </TableCell>
+                        <TableCell align="center">
+                          <strong>Internet (VNĐ)</strong>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {utilityData.map((item, index) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            backgroundColor:
+                              index % 2 === 0 ? "#FAFAFA" : "#FFFFFF",
+                          }}
+                        >
+                          <TableCell>
+                            <Typography variant="body2" fontWeight="bold">
+                              {item.apartmentId}
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Typography variant="body2">
+                              {item.electricity}
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Typography variant="body2">
+                              {item.water}
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Typography variant="body2" color="primary">
+                              {formatCurrency(item.internet)}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                <Box
+                  sx={{
+                    mt: 2,
+                    p: 2,
+                    backgroundColor: "#e8f5e8",
+                    borderRadius: 2,
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Tổng số căn hộ: {utilityData.length}
+                  </Typography>
+                </Box>
+              </Box>
+            )}
+
+            {/* Instructions */}
+            <Box
+              sx={{
+                p: 2,
+                backgroundColor: "#fff3cd",
+                borderRadius: 2,
+                border: "1px solid #ffeaa7",
+              }}
+            >
+              <Typography variant="body2" color="text.secondary">
+                <strong>Lưu ý:</strong> File Excel cần có các cột: apartmentId,
+                electricity, water, internet
+              </Typography>
+            </Box>
+          </Box>
+        </DialogContent>
+
+        <DialogActions sx={{ p: 3 }}>
+          <Button
+            onClick={() => {
+              setOpenUtilityDialog(false);
+              resetUtilityForm();
+            }}
+          >
+            Hủy
+          </Button>
+          <Button
+            onClick={handleUtilitySubmit}
+            variant="contained"
+            sx={{
+              backgroundColor: "#708871",
+              "&:hover": {
+                backgroundColor: "#5A6E5D",
+              },
+            }}
+            disabled={!selectedFile || !billName}
+          >
+            Lưu hóa đơn tiện ích
           </Button>
         </DialogActions>
       </Dialog>

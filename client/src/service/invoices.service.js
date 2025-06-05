@@ -45,3 +45,27 @@ export const getApartments = async () => {
   const result = await get(`apartments?page=1&size=1000`);
   return result;
 };
+
+export const uploadUtilityBill = async (formData) => {
+  try {
+    const response = await fetch(
+      "http://localhost:8080/api/v1/utilitybills/import",
+      {
+        method: "POST",
+        body: formData,
+        // Không cần set Content-Type khi dùng FormData với fetch
+        // Browser sẽ tự động set Content-Type: multipart/form-data
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error uploading utility bill:", error);
+    throw error;
+  }
+};
