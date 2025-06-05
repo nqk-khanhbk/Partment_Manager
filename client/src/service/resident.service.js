@@ -1,4 +1,4 @@
-import {  get } from "../utils/request"
+import {  get,postt,put,del } from "../utils/request"
 
 //lấy ra tổng số xe cộ
 export const totalResident= async () =>{
@@ -12,11 +12,20 @@ export const listResident= async () =>{
 }
 // tạo mới danh sách cư dân
 export const createResident= async (option) =>{
-    const result = await get(`residents`,option);
+    const result = await postt(`residents`,option);
     return result;
 }
 // xem chi tiết cư dân
 export const deatilResident = async (id)=>{
-    const result = await get(`residents`,id);
+    const result = await get(`residents/${id}`);
     return result;
 }
+// tạo mới danh sách cư dân
+export const editResident= async (option) =>{
+    const result = await put(`residents`,option);
+    return result;
+}
+export const deleteResident = async (id) => {
+    const result = await del(`residents/${id}`); 
+    return result;
+};

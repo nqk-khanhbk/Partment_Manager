@@ -24,7 +24,7 @@ const menuItems = [
   {
     section: 'Quản lý',
     items: [
-      { icon: <BsHouse />, label: 'Quản lý căn hộ', to: '/lop-hoc' },
+      { icon: <BsHouse />, label: 'Quản lý căn hộ', to: '/can-ho' },
       { icon: <BsPerson />, label: 'Quản lý cư dân',  to: '/cu-dan'  },
       { icon: <BsCarFront />, label: 'Quản lý xe cộ',to: '/xe-co' }
     ]
