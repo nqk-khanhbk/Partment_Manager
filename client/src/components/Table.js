@@ -48,7 +48,7 @@ const ClassTable = ({ columns, rows, allowSearching, onSearchChange }) => {
   }, [rows, searchValues]);
   // Phân trang
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const paginatedRows = useMemo(() => {
     const start = page * rowsPerPage;
