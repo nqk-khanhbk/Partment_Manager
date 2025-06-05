@@ -69,9 +69,10 @@ public class ResidentService {
 
     @Transactional
     public Resident createResident(ResidentCreateRequest resident) throws RuntimeException {
-        if (this.residentRepository.findById(resident.getId()).isPresent()) {
-            throw new RuntimeException("Resident with id = " + resident.getId() + " already exists");
-        }
+        // Find the highest ID in the database and increment by 1
+        Long newId = residentRepository.findTopByOrderByIdDesc()
+                .map(r -> r.getId() + 1L)
+                .orElse(1L);  // Start with 1 if no residents exist yet
 
         if(resident.getAddressNumber() != null) {
             Apartment apartment = apartmentRepository.findById(resident.getAddressNumber())
@@ -79,7 +80,7 @@ public class ResidentService {
             List<Resident> residentList = apartment.getResidentList();
 
             Resident resident1 = Resident.builder()
-                    .id(resident.getId())
+                    .id(newId)  // Use the generated ID instead of resident.getId()
                     .name(resident.getName())
                     .dob(resident.getDob())
                     .gender(resident.getGender())
@@ -97,13 +98,14 @@ public class ResidentService {
         }
         else {
             Resident resident1 = Resident.builder()
-                    .id(resident.getId())
+                    .id(newId)  // Use the generated ID instead of resident.getId()
                     .name(resident.getName())
                     .dob(resident.getDob())
                     .gender(resident.getGender())
                     .cic(resident.getCic())
                     .status(ResidentEnum.fromString(resident.getStatus()))
                     .apartment(null)
+                    .isActive(1)  // Set isActive to 1 by default
                     .build();
             return this.residentRepository.save(resident1);
         }
