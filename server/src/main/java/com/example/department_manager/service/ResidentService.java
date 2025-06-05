@@ -174,75 +174,18 @@ public class ResidentService {
 
     @Transactional
     public ApiResponse<String> deleteResident(Long id) throws Exception {
-        // Kiểm tra xem resident có tồn tại không
         Resident resident = this.fetchResidentById(id);
-
-        // TH1: Người đó chưa có phòng --> xóa luôn
-        if (resident.getApartment() == null) {
-            residentRepository.deleteById(id);
+        resident.setIsActive(0);
+        if (resident.getApartment() != null) {
+            Apartment apartment = apartmentRepository.findById(resident.getApartmentId()).orElseThrow(() -> new RuntimeException("Apartment with id " + resident.getApartmentId() + " not found"));
+            List<Resident> residentList = apartment.getResidentList();
+            residentList.remove(resident);
+            apartment.setResidentList(residentList);
         }
-        // TH2: Người đó đã có phòng
-        else {
-            // Lấy thông tin căn hộ của resident
-            Apartment apartment = resident.getApartment();
-
-            // TH con 1: Nếu người đó là chủ căn hộ --> xóa cả người đó và các thành viên
-            Apartment ownedApartment = apartmentRepository.findByOwner_Id(resident.getId()).orElse(null);
-            if (ownedApartment != null) {
-                // Xác nhận đây là chủ hộ
-                Long addressNumber = apartment.getAddressNumber();
-
-                // Gỡ bỏ thông tin chủ hộ khỏi căn hộ
-                ownedApartment.setOwner(null);
-                ownedApartment.setOwnerPhone(null);
-                apartmentRepository.save(ownedApartment);
-
-                // Lấy danh sách tất cả thành viên trong căn hộ
-                List<Resident> allResidents = apartment.getResidentList();
-
-                // Xóa tất cả xe cộ liên kết với căn hộ
-                List<Vehicle> allVehicles = apartment.getVehicleList();
-                if (allVehicles != null && !allVehicles.isEmpty()) {
-                    for (Vehicle vehicle : allVehicles) {
-                        // Xóa hoàn toàn xe khỏi database
-                        vehicleRepository.deleteById(vehicle.getId());
-                    }
-                    // Xóa tham chiếu đến xe cộ trong căn hộ
-                    apartment.setVehicleList(Collections.emptyList());
-                    apartmentRepository.save(apartment);
-                }
-                // Ngắt kết nối tất cả residents với apartment trước khi xóa để tránh lỗi ràng
-                // buộc
-                for (Resident r : allResidents) {
-                    r.setApartment(null);
-                    residentRepository.save(r);
-                }
-
-                for (Resident r : allResidents) {
-                    residentRepository.delete(r.getId());
-                }
-            }
-            // TH con 2: Nếu người đó là thành viên --> chỉ xóa thành viên đó
-            else {
-                // Xóa resident khỏi danh sách cư dân của căn hộ
-                List<Resident> residentList = apartment.getResidentList();
-                residentList.removeIf(r -> r.getId().equals(resident.getId()));
-                apartment.setResidentList(residentList);
-                apartmentRepository.save(apartment);
-
-                // Ngắt kết nối giữa resident và apartment
-                resident.setApartment(null);
-                residentRepository.save(resident);
-
-                // Xóa resident
-                residentRepository.deleteById(id);
-            }
-        }
-
-        // Trả về response
+        resident.setApartment(null);
         ApiResponse<String> response = new ApiResponse<>();
         response.setCode(HttpStatus.OK.value());
-        response.setMessage("Deleted resident successfully");
+        response.setMessage("delete resident success");
         response.setData(null);
         return response;
     }
