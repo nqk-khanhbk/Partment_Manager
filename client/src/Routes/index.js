@@ -11,6 +11,7 @@ import Invoices from "../Apps/invoices";
 import Statistics from "../Apps/statistics";
 import FeeAndFund from "../Apps/feeAndFund";
 import PrivateRoutes from "../components/privateRoutes";
+import Apartment from "../Apps/apartment";
 export const Routes = [
     {
         path: "/login",
@@ -30,6 +31,10 @@ export const Routes = [
                     {
                         path: '/tong-quan',
                         element: <Dashboard />
+                    },
+                    {
+                        path: '/can-ho',
+                        element: <Apartment />
                     },
                     {
                         path: '/xe-co',
