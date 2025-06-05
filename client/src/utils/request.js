@@ -69,3 +69,14 @@ export const del = async(path)=>{
     const result = await response.json();
     return result;
 }
+export const dell = async (path, option) => {
+  const response = await fetch(API_DOMAIN + path, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(option) // 👈 truyền dữ liệu vào body
+  });
+  const result = await response.json();
+  return result;
+};
