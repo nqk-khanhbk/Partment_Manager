@@ -1,4 +1,4 @@
-import { get, post, put, del } from "../utils/request";
+import { get, postt, put, del } from "../utils/request";
 
 // lấy ra list fee
 export const listFee = async () => {
@@ -8,7 +8,7 @@ export const listFee = async () => {
 
 //Tạo mới fee
 export const createFee = async (option) => {
-  const result = await post(`fees`, option);
+  const result = await postt(`fees`, option);
   return result;
 };
 //Cập nhật fee

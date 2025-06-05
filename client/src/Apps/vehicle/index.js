@@ -16,11 +16,12 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { listVehicle, createVehicle } from "../../service/vehicle.service";
+import { listVehicle, createVehicle, deleteVehicle } from "../../service/vehicle.service";
 import { useState, useEffect } from "react";
 import ClassTable from "../../components/Table";
-import CloseIcon from "@mui/icons-material/Close";
-import IconButton from "@mui/material/IconButton";
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { toast } from "react-toastify";
 const Vehicle = () => {
   const [dataVehicle, setDataVehicle] = useState([]);
@@ -51,28 +52,28 @@ const Vehicle = () => {
       headerName: "Loại xe",
       renderCell: (row) => {
         const category = row.category;
-        let color = "#000";
+        let color = '#000';
         switch (category) {
-          case "Car":
-            color = "#4caf50";
+          case 'Car':
+            color = '#4caf50';
             break;
-          case "Motorbike":
-            color = "#F44336";
+          case 'Motorbike':
+            color = '#F44336';
             break;
           default:
-            color = "#757575";
+            color = "#757575"
         }
         return (
           <Box
             sx={{
-              padding: "2px 8px",
+              padding: '2px 8px',
               backgroundColor: `${color}22`, // nền nhạt
               color: color,
-              borderRadius: "8px",
-              display: "inline-block",
+              borderRadius: '8px',
+              display: 'inline-block',
               fontWeight: 500,
-              fontSize: "14px",
-              textAlign: "center",
+              fontSize: '14px',
+              textAlign: 'center'
             }}
           >
             {category}
@@ -85,16 +86,11 @@ const Vehicle = () => {
       field: "thaoTac",
       headerName: "Hành động",
       flex: 1,
-      renderCell: () => (
-        <Box
-          display="flex"
-          justifyContent="flex-start"
-          gap="15px"
-          sx={{ cursor: "pointer" }}
-          alignItems="center"
-        >
-          <EditIcon sx={{ color: "#0D81ED" }} />
-          <DeleteIcon sx={{ color: "#C02135" }} />
+      renderCell: (row) => (
+        <Box display="flex" justifyContent="flex-start" gap="15px" sx={{ cursor: 'pointer' }} alignItems="center">
+          <VisibilityIcon sx={{ color: '#627' }} />
+          <EditIcon sx={{ color: '#0D81ED' }} />
+          <DeleteIcon sx={{ color: "#C02135" }} onClick={() => handleOpenDeleteDialog(row)} />
         </Box>
       ),
     },
@@ -126,7 +122,39 @@ const Vehicle = () => {
       toast.error("Tạo xe thất bại!");
     }
   };
+  // hàm xóa 1 xe
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [vehicleToDelete, setVehicleToDelete] = useState(null);
 
+  // Mở dialog xác nhận xóa
+  const handleOpenDeleteDialog = (vehicle) => {
+    setVehicleToDelete(vehicle);
+    setOpenDeleteDialog(true);
+  };
+  // Xác nhận xóa xe
+  const handleDelete = async () => {
+    try {
+      const { apartmentId, id, category } = vehicleToDelete;
+      const payload = { id, category, apartmentId }; // object truyền vào
+      console.log(payload)
+      const response = await deleteVehicle(apartmentId, payload);
+
+      if (response?.status === 200 || response?.message) {
+        toast.success("Xóa xe thành công!");
+        setOpenDeleteDialog(false);
+        setVehicleToDelete(null);
+
+        // Cập nhật lại danh sách
+        const updatedList = await listVehicle();
+        setDataVehicle(Object.values(updatedList.data.result));
+      } else {
+        toast.error("Xóa xe thất bại!");
+      }
+    } catch (err) {
+      toast.error("Lỗi khi xóa xe!");
+      console.error(err);
+    }
+  };
   return (
     <>
       {/* Tiêu đề */}
@@ -264,6 +292,45 @@ const Vehicle = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* xác nhận xóa xe */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        PaperProps={{
+          sx: { borderRadius: 3, width: 400, position: 'relative' }
+        }}
+      >
+        <DialogTitle>
+          Xác nhận xóa xe
+          <IconButton
+            onClick={() => setOpenDeleteDialog(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+          <Typography>Bạn có chắc chắn muốn xóa xe này không?</Typography>
+          <Box sx={{ backgroundColor: '#f5f5f5', padding: 2, borderRadius: 2 }}>
+            <Typography><strong>Biển số xe:</strong> {vehicleToDelete?.id}</Typography>
+            <Typography><strong>Số phòng:</strong> {vehicleToDelete?.apartmentId}</Typography>
+            <Typography><strong>Loại xe:</strong> {vehicleToDelete?.category === 'Motorbike' ? 'Xe máy' : 'Ô tô'}</Typography>
+          </Box>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)}>Hủy</Button>
+          <Button onClick={handleDelete} color="error" variant="contained">Xóa</Button>
+        </DialogActions>
+      </Dialog>
+
     </>
   );
 };
