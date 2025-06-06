@@ -506,15 +506,16 @@ const Invoices = () => {
         alignItems="center"
         justifyContent="space-between"
         sx={{
-          padding: "16px 20px",
-          borderRadius: "12px",
+          padding: "12px",
+          borderRadius: "8px",
           backgroundColor: "#FFFFFF",
+          gap:"12px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
           mb: 3,
         }}
       >
         <Typography
-          variant="h5"
+          variant="h6"
           sx={{
             fontWeight: "bold",
             color: "#C01235",
