@@ -16,6 +16,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/ai")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@CrossOrigin(origins = "http://localhost:3000")
 public class AialertController {
 
     // Static variable to store the latest alert data
