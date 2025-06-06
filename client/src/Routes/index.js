@@ -1,6 +1,6 @@
 import ClassRoom from "../Apps/Class";
 import Layout from "../Apps/Layout";
-import ClassHand from "../Apps/Class/class-hand"
+import ClassHand from "../Apps/Class/class-hand";
 import ClassCreateEhust from "../Apps/Class/classCreateEhust";
 import Login from "../Apps/login";
 import Register from "../Apps/register";
@@ -12,64 +12,57 @@ import Statistics from "../Apps/statistics";
 import FeeAndFund from "../Apps/feeAndFund";
 import PrivateRoutes from "../components/privateRoutes";
 import Apartment from "../Apps/apartment";
+import Parking from "../Apps/Parking";
 export const Routes = [
-    {
-        path: "/login",
-        element: <Login />
-    },
-    {
-        path: "/register",
-        element: <Register />
-    },
-    {
-        path: '/',
-        element: <Layout />,
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        element: <PrivateRoutes />,
         children: [
-            {
-                element: <PrivateRoutes />,
-                children: [
-                    {
-                        path: '/tong-quan',
-                        element: <Dashboard />
-                    },
-                    {
-                        path: '/can-ho',
-                        element: <Apartment />
-                    },
-                    {
-                        path: '/xe-co',
-                        element: <Vehicle />
-                    },
-                    {
-                        path: '/cu-dan',
-                        element: <Resident />
-                    },
-                    {
-                        path: '/hoa-don',
-                        element: <Invoices />
-                    },
-                    {
-                        path: '/thong-ke',
-                        element: <Statistics />
-                    },
-                    {
-                        path: '/phi-va-quy',
-                        element: <FeeAndFund />
-                    },
-                    {
-                        path: '/lop-hoc',
-                        element: <ClassRoom />,
-                    },
-                    {
-                        path: '/lop-hoc/them-lop-thu-cong',
-                        element: <ClassHand />
-                    },
-                    {
-                        path: '/lop-hoc/them-lop-tu-ehust',
-                        element: <ClassCreateEhust />
-                    }
-                ]
-            }
-        ]
-    }
-]
+          {
+            path: "/tong-quan",
+            element: <Dashboard />,
+          },
+          {
+            path: "/can-ho",
+            element: <Apartment />,
+          },
+          {
+            path: "/xe-co",
+            element: <Vehicle />,
+          },
+          {
+            path: "/cu-dan",
+            element: <Resident />,
+          },
+          {
+            path: "/hoa-don",
+            element: <Invoices />,
+          },
+          {
+            path: "/thong-ke",
+            element: <Statistics />,
+          },
+          {
+            path: "/phi-va-quy",
+            element: <FeeAndFund />,
+          },
+          {
+            path: "/parking",
+            element: <Parking />,
+          },
+        ],
+      },
+    ],
+  },
+];
