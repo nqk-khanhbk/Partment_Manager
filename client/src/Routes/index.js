@@ -1,7 +1,7 @@
-import ClassRoom from "../Apps/Class";
+// import ClassRoom from "../Apps/Class";
 import Layout from "../Apps/Layout";
-import ClassHand from "../Apps/Class/class-hand";
-import ClassCreateEhust from "../Apps/Class/classCreateEhust";
+// import ClassHand from "../Apps/Class/class-hand";
+// import ClassCreateEhust from "../Apps/Class/classCreateEhust";
 import Login from "../Apps/login";
 import Register from "../Apps/register";
 import Dashboard from "../Apps/dashboard";

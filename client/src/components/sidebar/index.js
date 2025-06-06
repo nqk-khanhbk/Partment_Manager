@@ -12,6 +12,7 @@ import {
   BsBarChart,
   BsPeople,
   BsClipboardCheck,
+  
 } from "react-icons/bs";
 import { LuCircleParking } from "react-icons/lu";
 
@@ -37,6 +38,20 @@ const menuItems = [
       { icon: <BsFileEarmarkText />, label: "Hóa đơn", to: "/hoa-don" },
     ],
   },
+  {
+    section: 'Quản lý hệ thống',
+    items: [
+      { icon: <BsGear />, label: 'Cấu hình', to: '/cau-hinh' },
+      { icon: <BsFileEarmarkText />, label: 'Báo cáo', to: '/bao-cao' }
+    ]
+  },
+  {
+    section: 'Cài đặt',
+    items: [
+      { icon: <BsPeople />, label: 'Người dùng', to: '/nguoi-dung' },
+      { icon: <BsClipboardCheck />, label: 'Vai trò', to: '/vai-tro' }
+    ]
+  }
 ];
 
 const SideBar = () => {
