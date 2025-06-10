@@ -22,6 +22,9 @@ public class AialertController {
     // Static variable to store the latest alert data
     private static Map<String, Object> alertData = new HashMap<>();
 
+    // Static list to store notifications
+    private static List<String> notifications = new ArrayList<>();
+
     @PostMapping("/alert")
     public ResponseEntity<Map<String, Object>> receiveAlert(@RequestBody AlertRequest request) {
         // Update the static variable with new data
@@ -35,10 +38,33 @@ public class AialertController {
     public ResponseEntity<Map<String, Object>> getAlertData() {
         return ResponseEntity.ok(alertData);
     }
+
+    @PostMapping("/notification")
+    public ResponseEntity<Map<String, Object>> receiveNotification(@RequestBody NotificationRequest request) {
+        // Add the notification to the list
+        notifications.add(request.getMessage());
+
+        // Prepare response
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "Notification received");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/notification")
+    public ResponseEntity<List<String>> getNotifications() {
+        return ResponseEntity.ok(notifications);
+    }
 }
 
-// Request DTO
+// Request DTOs
 @Data
 class AlertRequest {
     private List<Integer> freePositions = new ArrayList<>();
+}
+
+@Data
+class NotificationRequest {
+    private String message;
 }
